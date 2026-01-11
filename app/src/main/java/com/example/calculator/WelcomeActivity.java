@@ -1,15 +1,12 @@
-// app/src/main/java/com/example/calculator/WelcomeActivity.java
 package com.example.calculator;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,16 +16,8 @@ public class WelcomeActivity extends AppCompatActivity {
         Button adminLogin = findViewById(R.id.btn_admin_login);
         Button register = findViewById(R.id.btn_register);
 
-        userLogin.setOnClickListener(v ->
-                Toast.makeText(this, "User Login clicked (implement navigation)", Toast.LENGTH_SHORT).show()
-        );
-
-        adminLogin.setOnClickListener(v ->
-                Toast.makeText(this, "Admin Login clicked (implement navigation)", Toast.LENGTH_SHORT).show()
-        );
-
-        register.setOnClickListener(v ->
-                Toast.makeText(this, "Register New User clicked (implement navigation)", Toast.LENGTH_SHORT).show()
-        );
+        userLogin.setOnClickListener(v -> startActivity(new Intent(this, UserLoginActivity.class)));
+        adminLogin.setOnClickListener(v -> startActivity(new Intent(this, AdminLoginActivity.class)));
+        register.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
     }
 }
