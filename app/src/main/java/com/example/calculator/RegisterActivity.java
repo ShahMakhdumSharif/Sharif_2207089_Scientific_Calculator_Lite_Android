@@ -8,11 +8,24 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class RegisterActivity extends AppCompatActivity {
+
+    private DatabaseReference usersRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        // initialize Firebase (safe even if auto-init already happened)
+        FirebaseApp.initializeApp(this);
+        usersRef = FirebaseDatabase.getInstance().getReference("users");
 
         EditText etUser = findViewById(R.id.et_reg_username);
         EditText etPass = findViewById(R.id.et_reg_password);
@@ -37,7 +50,27 @@ public class RegisterActivity extends AppCompatActivity {
                 etConfirm.setError("Does not match");
                 return;
             }
-            Toast.makeText(this, "Register clicked (implement saving user)", Toast.LENGTH_SHORT).show();
+
+            // check if username exists
+            usersRef.child(user).get().addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(this, "Database error", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                DataSnapshot snapshot = task.getResult();
+                if (snapshot.exists()) {
+                    etUser.setError("Username taken");
+                    Toast.makeText(this, "Username already exists", Toast.LENGTH_SHORT).show();
+                } else {
+                    // store password (example: plain text - replace with hashing in production)
+                    usersRef.child(user).child("password").setValue(pass)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(this, "Registered successfully", Toast.LENGTH_SHORT).show();
+                                finish();
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(this, "Register failed", Toast.LENGTH_SHORT).show());
+                }
+            });
         });
 
         btnBack.setOnClickListener(v -> finish());

@@ -1,3 +1,4 @@
+// app/src/main/java/com/example/calculator/AdminLoginActivity.java
 package com.example.calculator;
 
 import android.os.Bundle;
@@ -9,6 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AdminLoginActivity extends AppCompatActivity {
+
+    private static final String ADMIN_PASSWORD = "admin123";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +28,13 @@ public class AdminLoginActivity extends AppCompatActivity {
                 etAdminPassword.setError("Required");
                 return;
             }
-            Toast.makeText(this, "Admin login clicked (implement auth)", Toast.LENGTH_SHORT).show();
+            if (ADMIN_PASSWORD.equals(pass)) {
+                Toast.makeText(this, "Admin login successful", Toast.LENGTH_SHORT).show();
+                // proceed to admin area (implement as needed)
+            } else {
+                etAdminPassword.setError("Incorrect password");
+                Toast.makeText(this, "Invalid admin password", Toast.LENGTH_SHORT).show();
+            }
         });
 
         btnBack.setOnClickListener(v -> finish());
