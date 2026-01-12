@@ -14,7 +14,7 @@
             android:id="@+id/et_reg_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter user name"
+            android:hint="Enter user name(special characters is not allowed except '_')"
             android:inputType="textPersonName"
             android:layout_marginBottom="12dp" />
 
@@ -22,7 +22,7 @@
             android:id="@+id/et_reg_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Password"
+            android:hint="Enter Password(at least 6 characters)"
             android:inputType="textPassword"
             android:layout_marginBottom="12dp" />
 

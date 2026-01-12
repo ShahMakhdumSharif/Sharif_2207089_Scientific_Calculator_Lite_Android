@@ -1,9 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Sharif_2207089_Scientific_Calculator_Lite_Android" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Theme.Calculator"
+        parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your theme here -->
+        <!-- Example -->
+        <!-- <item name="colorPrimary">@color/purple_500</item> -->
     </style>
-
-    <style name="Theme.Sharif_2207089_Scientific_Calculator_Lite_Android" parent="Base.Theme.Sharif_2207089_Scientific_Calculator_Lite_Android" />
 </resources>
