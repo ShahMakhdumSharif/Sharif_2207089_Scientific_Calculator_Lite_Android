@@ -81,7 +81,6 @@ public class UserLoginActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
     }
 
-    // Replace characters not allowed in Firebase keys and normalize case
     private String encodeKey(String username) {
         if (username == null) return "";
         // lowercasing makes login case-insensitive for username; keep consistent with registration

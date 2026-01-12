@@ -1,6 +1,6 @@
-// File: `app/src/main/java/com/example/calculator/AdminActivity.java`
 package com.example.calculator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,7 +33,7 @@ public class AdminActivity extends AppCompatActivity {
         }
         tvWelcome.setText("Welcome Shah Makhdum Sharif");
 
-        btnAllUsers.setOnClickListener(v -> showPlaceholder("All Users"));
+        btnAllUsers.setOnClickListener(v -> startActivity(new Intent(AdminActivity.this, AllUsersActivity.class)));
         btnHistory.setOnClickListener(v -> showPlaceholder("History"));
         btnBlockList.setOnClickListener(v -> showPlaceholder("Block List"));
         btnBlockUser.setOnClickListener(v -> showPlaceholder("Block User"));

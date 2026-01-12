@@ -1,4 +1,3 @@
-// java
 package com.example.calculator;
 
 import android.content.Intent;

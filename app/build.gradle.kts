@@ -28,7 +28,8 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation("com.google.firebase:firebase-auth:22.1.1")
-    implementation(libs.firebase.database) // optional if still used
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.firestore) // optional if still used
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
