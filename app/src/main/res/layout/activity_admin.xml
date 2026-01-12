@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_welcome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Welcome Shah Makhdum Sharif"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="12dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp" />
+
+    <Button
+        android:id="@+id/btn_all_users"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="All User"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btn_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="History"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btn_block_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Block List"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btn_block_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Block User"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btn_limit_operation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Limit Operation for User"
+        android:layout_marginTop="8dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btn_admin_back"
+            android:layout_width="144dp"
+            android:layout_height="65dp"
+            android:contentDescription="Back to previous screen"
+            android:text="Back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
