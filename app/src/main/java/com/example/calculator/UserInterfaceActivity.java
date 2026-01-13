@@ -164,11 +164,73 @@ public class UserInterfaceActivity extends AppCompatActivity {
     private void calculateResult() {
         String expr = etDisplay.getText().toString();
         if (expr.isEmpty()) return;
-
+        // First try to detect desktop-style operations and use the ported Calculation classes
         try {
-            double result = eval(expr);
-            lastResult = String.valueOf(result);
-            etDisplay.setText(lastResult);
+            String out = null;
+
+            // MATRIX: contains '|' between two matrices
+            if (expr.contains("|")) {
+                // try sizes 2 and 3 and ops ADD, SUB, MUL until one succeeds
+                String[] ops = new String[]{"ADD", "SUB", "MUL"};
+                for (int size : new int[]{2, 3}) {
+                    for (String op : ops) {
+                        try {
+                            out = com.example.calculator.controller.Calculation.matrix.computeFromString(expr, size, op);
+                            if (out != null) {
+                                // found a match
+                                expr = "MATRIX:" + expr;
+                                break;
+                            }
+                        } catch (Exception ignored) { }
+                    }
+                    if (out != null) break;
+                }
+            }
+
+            // POLYNOMIAL: contains '@' (coeffs@x)
+            if (out == null && expr.contains("@")) {
+                try {
+                    out = com.example.calculator.controller.Calculation.polynomial.computeFromString(expr, 3);
+                    if (out != null) expr = "POLY:" + expr;
+                } catch (Exception ignored) { }
+            }
+
+            // LINEAR: contains ';' and rows of comma-separated numbers
+            if (out == null && expr.contains(";") && expr.contains(",")) {
+                try {
+                    out = com.example.calculator.controller.Calculation.linear.computeFromString(expr);
+                    if (out != null) expr = "LINEAR:" + expr;
+                } catch (Exception ignored) { }
+            }
+
+            // POWER: two numbers separated by comma or space
+            if (out == null && expr.contains(",") && !expr.contains(";") && !expr.contains("@")) {
+                try {
+                    out = com.example.calculator.controller.Calculation.power.computeFromString(expr);
+                    if (out != null) expr = "POWER:" + expr;
+                } catch (Exception ignored) { }
+            }
+
+            // SQRT: if it's a single numeric value (and starts with √ or looks like a number)
+            if (out == null && (expr.startsWith("√") || expr.matches("^[0-9.+\\-]+$"))) {
+                try {
+                    String raw = expr.startsWith("√") ? expr.substring(1) : expr;
+                    out = com.example.calculator.controller.Calculation.squareroot.computeFromString(raw);
+                    if (out != null) expr = "sqrt(" + raw + ")";
+                } catch (Exception ignored) { }
+            }
+
+            if (out == null) {
+                // Fallback to the inline evaluator
+                double result = eval(expr);
+                lastResult = String.valueOf(result);
+                etDisplay.setText(lastResult);
+                out = lastResult;
+            } else {
+                // we have a computed string result from ported classes
+                lastResult = out;
+                etDisplay.setText(out);
+            }
 
             // Save calculation to Firebase under users/<username>/history
             try {
@@ -186,6 +248,7 @@ public class UserInterfaceActivity extends AppCompatActivity {
                             });
                 }
             } catch (Exception ignored) { }
+
         } catch (Exception e) {
             Toast.makeText(this, "Invalid expression", Toast.LENGTH_SHORT).show();
         }
