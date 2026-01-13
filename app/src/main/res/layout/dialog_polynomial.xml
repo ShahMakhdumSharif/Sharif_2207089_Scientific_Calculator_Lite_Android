@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter coefficients (comma separated) and x value"
+        android:paddingBottom="8dp" />
+
+    <EditText
+        android:id="@+id/et_coeffs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="e.g. 1,2,3" />
+
+    <EditText
+        android:id="@+id/et_xvalue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter x value (e.g. 2)"
+        android:inputType="numberDecimal"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

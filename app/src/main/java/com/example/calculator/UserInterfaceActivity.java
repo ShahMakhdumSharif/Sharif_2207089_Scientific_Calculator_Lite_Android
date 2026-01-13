@@ -120,9 +120,24 @@ public class UserInterfaceActivity extends AppCompatActivity {
         // Equal
         btnEqual.setOnClickListener(v -> calculateResult());
 
-        // Save operations to Firebase
+        // Advanced operation dialogs
         btnMat.setOnClickListener(v -> saveOperation("MATRIX"));
-        btnPoly.setOnClickListener(v -> saveOperation("POLYNOMIAL"));
+        btnPoly.setOnClickListener(v -> {
+            // open polynomial dialog and set result into display
+            PolynomialDialog.show(this, result -> {
+                etDisplay.setText(result);
+                // save history entry for this computed result
+                try {
+                    java.util.HashMap<String, Object> h = new java.util.HashMap<>();
+                    h.put("expression", "POLY:" + "coeffs@x");
+                    h.put("result", result);
+                    h.put("ts", System.currentTimeMillis());
+                    if (usersRef != null && username != null) {
+                        usersRef.child(username).child("history").push().setValue(h);
+                    }
+                } catch (Exception ignored) { }
+            });
+        });
         btnLin.setOnClickListener(v -> saveOperation("LINEAR"));
     }
 
