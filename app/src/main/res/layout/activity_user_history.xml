@@ -6,14 +6,29 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- RecyclerView for displaying all users -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_users"
+    <!-- Header: User history title -->
+    <TextView
+        android:id="@+id/tv_user_name_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="History for: username"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingBottom="12dp"
+        android:gravity="center_horizontal"/>
+
+    <!-- Scrollable TableLayout for calculation history -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:scrollbars="vertical" />
+        android:layout_weight="1">
+
+        <TableLayout
+            android:id="@+id/table_user_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"/>
+    </ScrollView>
 
     <!-- Bottom buttons -->
     <LinearLayout
@@ -23,22 +38,22 @@
         android:paddingTop="12dp">
 
         <Button
-            android:id="@+id/btn_history_back"
+            android:id="@+id/btn_back"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Back" />
+            android:text="Back"/>
 
         <Space
             android:layout_width="12dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <Button
-            android:id="@+id/btn_history_logout"
+            android:id="@+id/btn_logout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Logout" />
+            android:text="Logout"/>
     </LinearLayout>
 
 </LinearLayout>

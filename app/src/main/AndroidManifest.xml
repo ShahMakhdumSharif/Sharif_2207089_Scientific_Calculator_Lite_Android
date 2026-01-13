@@ -20,6 +20,9 @@
         <activity
             android:name=".HistoryActivity"
             android:exported="false" />
+        <activity
+            android:name=".UserHistoryActivity"
+            android:exported="false" />
 
         <activity
             android:name=".RegisterActivity"

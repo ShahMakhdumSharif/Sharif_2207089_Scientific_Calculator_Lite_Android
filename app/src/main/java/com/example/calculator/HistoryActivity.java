@@ -1,126 +1,118 @@
-// java
 package com.example.calculator;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class HistoryActivity extends AppCompatActivity {
-    private DatabaseReference usersRef;
-    private TableLayout table;
+
+    RecyclerView rvUsers;
+    Button btnBack, btnLogout;
+    ArrayList<String> userList = new ArrayList<>();
+    UserAdapter adapter;
+    DatabaseReference usersRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        table = findViewById(R.id.table_history_users);
-        Button btnBack = findViewById(R.id.btn_history_back);
-        Button btnLogout = findViewById(R.id.btn_history_logout);
+        rvUsers = findViewById(R.id.rv_users);
+        btnBack = findViewById(R.id.btn_history_back);
+        btnLogout = findViewById(R.id.btn_history_logout);
 
-        if (table == null) {
-            Toast.makeText(this, "Missing table_history_users in layout", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
+        rvUsers.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new UserAdapter();
+        rvUsers.setAdapter(adapter);
 
         FirebaseApp.initializeApp(this);
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-        table.removeAllViews();
-        TableRow header = new TableRow(this);
-        header.addView(makeCell("Username", true));
-        table.addView(header);
+        loadUsers();
 
+        btnBack.setOnClickListener(v -> finish());
+
+        btnLogout.setOnClickListener(v -> {
+            Intent i = new Intent(this, WelcomeActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+            finish();
+        });
+    }
+
+    private void loadUsers() {
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot == null || !snapshot.exists() || !snapshot.hasChildren()) {
-                    showEmptyRow("No users registered");
-                    Toast.makeText(HistoryActivity.this, "No users in Realtime Database", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                int count = 0;
+                userList.clear();
                 for (DataSnapshot child : snapshot.getChildren()) {
                     String username = child.child("username").getValue(String.class);
-                    if (username == null || username.isEmpty()) username = child.getKey();
-                    if (username == null) username = "unknown";
-
-                    final String u = username; // make effectively final for lambda
-                    TableRow row = new TableRow(HistoryActivity.this);
-                    TextView tv = makeCell(u, false);
-                    row.addView(tv);
-
-                    row.setClickable(true);
-                    row.setFocusable(true);
-                    row.setOnClickListener(v -> {
-                        Toast.makeText(HistoryActivity.this, "Selected: " + u, Toast.LENGTH_SHORT).show();
-                    });
-
-                    table.addView(row);
-                    count++;
+                    if (username == null) username = child.getKey();
+                    if (username != null)
+                        userList.add(username);
                 }
-                Toast.makeText(HistoryActivity.this, "Loaded " + count + " users", Toast.LENGTH_SHORT).show();
+                adapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                showEmptyRow("Failed to load users");
-                Toast.makeText(HistoryActivity.this, "DB error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    // ================= ADAPTER =================
+
+    class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserVH> {
+
+        @NonNull
+        @Override
+        public UserVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.activity_history_item_user, parent, false);
+            return new UserVH(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull UserVH holder, int position) {
+            String username = userList.get(position);
+            holder.tvUsername.setText(username);
+
+            holder.itemView.setOnClickListener(v -> {
+                Intent i = new Intent(HistoryActivity.this, UserHistoryActivity.class);
+                i.putExtra("username", username);
+                startActivity(i);
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return userList.size();
+        }
+
+        class UserVH extends RecyclerView.ViewHolder {
+            TextView tvUsername;
+
+            UserVH(@NonNull View itemView) {
+                super(itemView);
+                tvUsername = itemView.findViewById(R.id.tv_username);
             }
-        });
-
-        btnBack.setOnClickListener(v -> {
-            Intent i = new Intent(HistoryActivity.this, AdminActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-            finish();
-        });
-
-        btnLogout.setOnClickListener(v -> {
-            Intent i = new Intent(HistoryActivity.this, WelcomeActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-            finish();
-        });
-    }
-
-    private void showEmptyRow(String message) {
-        TableRow row = new TableRow(this);
-        TextView tv = makeCell(message, false);
-        tv.setLayoutParams(new TableRow.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        row.addView(tv);
-        table.addView(row);
-    }
-
-    private TextView makeCell(String text, boolean header) {
-        TextView tv = new TextView(this);
-        tv.setText(text);
-        int pad = (int) (8 * getResources().getDisplayMetrics().density);
-        tv.setPadding(pad, pad, pad, pad);
-        tv.setLayoutParams(new TableRow.LayoutParams(
-                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        tv.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
-        if (header) tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
-        return tv;
+        }
     }
 }
