@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp">
+
+    <!-- Top Message -->
+    <TextView
+        android:id="@+id/tv_limit_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Limit operation for:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Back Button (Bottom Left) -->
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"/>
+
+    <!-- Logout Button (Bottom Right) -->
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"/>
+
+    <!-- Operations Grid -->
+    <GridLayout
+        android:id="@+id/grid_operations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_limit_message"
+        android:layout_above="@id/btn_back"
+        android:columnCount="4"
+        android:layout_marginTop="12dp">
+
+        <Button android:text="MATRIX" android:id="@+id/btn_mat"/>
+        <Button android:text="POLYNOMIAL" android:id="@+id/btn_poly"/>
+        <Button android:text="LINEAR" android:id="@+id/btn_lin"/>
+        <View android:layout_width="0dp" android:layout_height="0dp"/>
+
+        <Button android:text="+" android:id="@+id/btn_add"/>
+        <Button android:text="-" android:id="@+id/btn_subtract"/>
+        <Button android:text="*" android:id="@+id/btn_multiply"/>
+        <Button android:text="/" android:id="@+id/btn_divide"/>
+
+        <Button android:text="√" android:id="@+id/btn_sqrt"/>
+        <Button android:text="x^" android:id="@+id/btn_x_pow"/>
+        <Button android:text="Clear" android:id="@+id/btn_clear"/>
+        <View android:layout_width="0dp" android:layout_height="0dp"/>
+    </GridLayout>
+</RelativeLayout>

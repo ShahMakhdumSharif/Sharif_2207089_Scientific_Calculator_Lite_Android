@@ -58,9 +58,10 @@ public class AdminActivity extends AppCompatActivity {
         );
 
         // Limit Operation (placeholder for now)
-        btnLimitOp.setOnClickListener(v ->
-                Toast.makeText(this, "Limit Operation clicked (not implemented yet)", Toast.LENGTH_SHORT).show()
-        );
+        btnLimitOp.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminActivity.this, LimitOperationActivity.class);
+            startActivity(intent);
+        });
 
         // Back button
         btnBack.setOnClickListener(v -> finish());

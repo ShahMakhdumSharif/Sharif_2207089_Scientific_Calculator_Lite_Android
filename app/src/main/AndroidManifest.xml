@@ -29,6 +29,15 @@
         <activity
             android:name=".BlockUserActivity"
             android:exported="false" />
+        <activity
+            android:name=".LimitOperationActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".LimitOperationUserActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".UserInterfaceActivity"
+            android:exported="false"/>
 
         <activity
             android:name=".RegisterActivity"

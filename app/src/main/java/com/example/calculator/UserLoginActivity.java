@@ -1,5 +1,6 @@
 package com.example.calculator;
-import android.util.Log;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -45,7 +46,8 @@ public class UserLoginActivity extends AppCompatActivity {
                 return;
             }
 
-            String key = encodeKey(userInput); // normalize username for Firebase key
+            String key = encodeKey(userInput);
+
             usersRef.child(key).get().addOnCompleteListener(task -> {
                 if (!task.isSuccessful()) {
                     Log.e(TAG, "Firebase read failed", task.getException());
@@ -62,7 +64,6 @@ public class UserLoginActivity extends AppCompatActivity {
 
                 String stored = snapshot.child("password").getValue(String.class);
                 if (stored == null) {
-                    Log.w(TAG, "No password stored for user: " + key);
                     etPassword.setError("Incorrect");
                     Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();
                     return;
@@ -70,7 +71,12 @@ public class UserLoginActivity extends AppCompatActivity {
 
                 if (passInput.equals(stored)) {
                     Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
-                    // proceed to next activity
+
+                    // Start UserInterfaceActivity
+                    Intent intent = new Intent(UserLoginActivity.this, UserInterfaceActivity.class);
+                    intent.putExtra("USERNAME", userInput); // pass username
+                    startActivity(intent);
+                    finish(); // optional
                 } else {
                     etPassword.setError("Incorrect");
                     Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();
@@ -83,9 +89,7 @@ public class UserLoginActivity extends AppCompatActivity {
 
     private String encodeKey(String username) {
         if (username == null) return "";
-        // lowercasing makes login case-insensitive for username; keep consistent with registration
         String key = username.trim().toLowerCase();
-        // Firebase disallows . # $ [ ]
         return key.replace(".", "_")
                 .replace("#", "_")
                 .replace("$", "_")
