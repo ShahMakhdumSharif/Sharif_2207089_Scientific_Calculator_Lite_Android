@@ -34,7 +34,7 @@ public class AdminActivity extends AppCompatActivity {
         tvWelcome.setText("Welcome Shah Makhdum Sharif");
 
         btnAllUsers.setOnClickListener(v -> startActivity(new Intent(AdminActivity.this, AllUsersActivity.class)));
-        btnHistory.setOnClickListener(v -> showPlaceholder("History"));
+        btnHistory.setOnClickListener(v -> startActivity(new Intent(AdminActivity.this, HistoryActivity.class)));
         btnBlockList.setOnClickListener(v -> showPlaceholder("Block List"));
         btnBlockUser.setOnClickListener(v -> showPlaceholder("Block User"));
         btnLimitOp.setOnClickListener(v -> showPlaceholder("Limit Operation for User"));
