@@ -25,6 +25,7 @@ public class AdminActivity extends AppCompatActivity {
         Button btnBlockList = findViewById(R.id.btn_block_list);
         Button btnBlockUser = findViewById(R.id.btn_block_user);
         Button btnLimitOp = findViewById(R.id.btn_limit_operation);
+        Button btnUnblockRequests = findViewById(R.id.btn_unblock_requests);
         Button btnBack = findViewById(R.id.btn_admin_back);
 
         if (tvWelcome == null || btnAllUsers == null || btnHistory == null ||
@@ -62,6 +63,9 @@ public class AdminActivity extends AppCompatActivity {
             Intent intent = new Intent(AdminActivity.this, LimitOperationActivity.class);
             startActivity(intent);
         });
+
+                // Unblock requests
+                btnUnblockRequests.setOnClickListener(v -> startActivity(new Intent(AdminActivity.this, UnblockRequestsActivity.class)));
 
         // Back button
         btnBack.setOnClickListener(v -> finish());

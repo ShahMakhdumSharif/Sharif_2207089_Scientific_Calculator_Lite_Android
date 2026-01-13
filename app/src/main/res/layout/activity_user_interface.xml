@@ -2,17 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp">
+    android:padding="12dp"
+    android:background="@color/surface">
 
     <!-- Welcome Label -->
     <TextView
         android:id="@+id/tv_welcome"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Welcome"
         android:textSize="22sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/onSurface" />
 
     <!-- Instruction Label -->
     <TextView
@@ -23,99 +25,105 @@
         android:layout_marginTop="6dp"
         android:gravity="center"
         android:text="You are asked to do the operation:"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textColor="@color/onSurface" />
 
     <!-- Display -->
     <EditText
         android:id="@+id/et_display"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="140dp"
         android:layout_below="@id/tv_instruction"
-        android:layout_marginTop="10dp"
-        android:background="#DDDDDD"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/neutral_light"
         android:focusable="false"
         android:gravity="end|center_vertical"
         android:inputType="none"
-        android:padding="10dp"
-        android:textSize="24sp" />
+        android:padding="16dp"
+        android:textSize="28sp"
+        style="@style/DisplayText" />
 
-    <!-- Calculator Grid -->
+    <!-- Calculator Grid (4 columns) -->
     <GridLayout
         android:id="@+id/grid_calculator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/et_display"
-        android:layout_above="@id/btn_history"
         android:layout_marginTop="12dp"
-        android:columnCount="4">
+        android:columnCount="4"
+        android:rowCount="6"
+        android:useDefaultMargins="true">
 
-        <!-- Row 1 -->
-        <!-- Row 1 -->
-        <Button android:id="@+id/btn_back_op" android:text="&lt;"/>
-        <Button android:id="@+id/btn_forward_op" android:text="&gt;"/>
-        <Button android:id="@+id/btn_power" android:text="^"/>
-        <Button android:id="@+id/btn_mod" android:text="MOD"/>
+        <!-- Row 1: special operations -->
+        <Button style="@style/CalcButtonSecondary" android:id="@+id/btn_back_op" android:text="&lt;"/>
+        <Button style="@style/CalcButtonSecondary" android:id="@+id/btn_forward_op" android:text=">"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_power" android:text="^"/>
+        <Button style="@style/CalcButtonSecondary" android:id="@+id/btn_mod" android:text="MOD"/>
 
-        <!-- Row 2 -->
-        <Button android:id="@+id/btn_sqrt" android:text="√"/>
-        <Button android:id="@+id/btn_x_pow" android:text="x^"/>
-        <Button android:id="@+id/btn_mat" android:text="Mat"/>
-        <Button android:id="@+id/btn_poly" android:text="Poly"/>
+        <!-- Row 2: functions -->
+        <Button style="@style/CalcButton" android:id="@+id/btn_sqrt" android:text="√"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_x_pow" android:text="x^"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_mat" android:text="Mat"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_poly" android:text="Poly"/>
 
-        <!-- Row 3 -->
-        <Button android:id="@+id/btn_lin" android:text="Lin"/>
-        <Button android:id="@+id/btn_del" android:text="DEL" android:textColor="#e10e0e"/>
-        <Button android:id="@+id/btn_ac" android:text="AC" android:textColor="#e10e0e"/>
+        <!-- Row 3: clear/del/lin/ans -->
+        <Button style="@style/CalcButton" android:id="@+id/btn_lin" android:text="Lin"/>
+        <Button style="@style/CalcButtonSecondary" android:id="@+id/btn_del" android:text="DEL" android:textColor="@color/danger"/>
+        <Button style="@style/CalcButtonSecondary" android:id="@+id/btn_ac" android:text="AC" android:textColor="@color/danger"/>
+        <Button style="@style/CalcButtonSecondary" android:id="@+id/btn_ans" android:text="Ans"/>
+
+        <!-- Row 4: 7 8 9 / -->
+        <Button style="@style/CalcButton" android:id="@+id/btn_7" android:text="7"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_8" android:text="8"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_9" android:text="9"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_divide" android:text="/"/>
+
+        <!-- Row 5: 4 5 6 * -->
+        <Button style="@style/CalcButton" android:id="@+id/btn_4" android:text="4"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_5" android:text="5"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_6" android:text="6"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_multiply" android:text="*"/>
+
+        <!-- Row 6: 1 2 3 - -->
+        <Button style="@style/CalcButton" android:id="@+id/btn_1" android:text="1"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_2" android:text="2"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_3" android:text="3"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_subtract" android:text="-"/>
+
+        <!-- Row 7: 0 . exp + -->
+        <Button style="@style/CalcButton" android:id="@+id/btn_0" android:text="0"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_dot" android:text="."/>
+        <Button style="@style/CalcButtonSecondary" android:id="@+id/btn_exp" android:text="×10^x"/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_add" android:text="+"/>
+
+        <!-- Row 8: placeholders + equal -->
         <View android:layout_width="0dp" android:layout_height="0dp"/>
-
-        <!-- Row 4 -->
-        <Button android:id="@+id/btn_7" android:text="7"/>
-        <Button android:id="@+id/btn_8" android:text="8"/>
-        <Button android:id="@+id/btn_9" android:text="9"/>
-        <Button android:id="@+id/btn_divide" android:text="/"/>
-
-        <!-- Row 5 -->
-        <Button android:id="@+id/btn_4" android:text="4"/>
-        <Button android:id="@+id/btn_5" android:text="5"/>
-        <Button android:id="@+id/btn_6" android:text="6"/>
-        <Button android:id="@+id/btn_multiply" android:text="*"/>
-
-        <!-- Row 6 -->
-        <Button android:id="@+id/btn_1" android:text="1"/>
-        <Button android:id="@+id/btn_2" android:text="2"/>
-        <Button android:id="@+id/btn_3" android:text="3"/>
-        <Button android:id="@+id/btn_subtract" android:text="-"/>
-
-        <!-- Row 7 -->
-        <Button android:id="@+id/btn_0" android:text="0"/>
-        <Button android:id="@+id/btn_dot" android:text="."/>
-        <Button android:id="@+id/btn_exp" android:text="×10^x"/>
-        <Button android:id="@+id/btn_add" android:text="+"/>
-
-        <!-- Row 8 -->
-        <Button android:id="@+id/btn_ans" android:text="Ans"/>
         <View android:layout_width="0dp" android:layout_height="0dp"/>
         <View android:layout_width="0dp" android:layout_height="0dp"/>
-        <Button android:id="@+id/btn_equal" android:text="="/>
+        <Button style="@style/CalcButton" android:id="@+id/btn_equal" android:text="="/>
 
     </GridLayout>
 
     <!-- History Button (Bottom Left) -->
     <Button
+        style="@style/CalcButtonSecondary"
         android:id="@+id/btn_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="History"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_margin="12dp"/>
 
     <!-- Logout Button (Bottom Right) -->
     <Button
+        style="@style/CalcButtonSecondary"
         android:id="@+id/btn_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Logout"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:layout_margin="12dp"/>
 
 </RelativeLayout>

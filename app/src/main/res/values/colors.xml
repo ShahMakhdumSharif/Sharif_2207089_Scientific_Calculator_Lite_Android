@@ -2,4 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="primary">#1E88E5</color>
+    <color name="primaryVariant">#1565C0</color>
+    <color name="surface">#F5F7FA</color>
+    <color name="onSurface">#222222</color>
+    <color name="accent">#FFB300</color>
+    <color name="neutral_light">#FFFFFF</color>
+    <color name="danger">#E53935</color>
 </resources>

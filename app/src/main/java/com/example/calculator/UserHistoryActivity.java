@@ -46,11 +46,12 @@ public class UserHistoryActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btn_back);
         btnLogout = findViewById(R.id.btn_logout);
 
-        FirebaseApp.initializeApp(this);
-        historyRef = FirebaseDatabase.getInstance()
-                .getReference("users")
-                .child(username)
-                .child("history");
+    FirebaseApp.initializeApp(this);
+    String key = encodeKey(username);
+    historyRef = FirebaseDatabase.getInstance()
+        .getReference("users")
+        .child(key)
+        .child("history");
 
         loadHistory();
 
@@ -126,5 +127,15 @@ public class UserHistoryActivity extends AppCompatActivity {
         tv.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
         if (header) tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
         return tv;
+    }
+
+    private String encodeKey(String username) {
+        if (username == null) return "";
+        String key = username.trim().toLowerCase();
+        return key.replace(".", "_")
+                .replace("#", "_")
+                .replace("$", "_")
+                .replace("[", "_")
+                .replace("]", "_");
     }
 }

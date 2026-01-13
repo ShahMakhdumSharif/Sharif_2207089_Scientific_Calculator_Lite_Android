@@ -30,6 +30,9 @@
             android:name=".BlockUserActivity"
             android:exported="false" />
         <activity
+            android:name=".UnblockRequestsActivity"
+            android:exported="false" />
+        <activity
             android:name=".LimitOperationActivity"
             android:exported="false"/>
         <activity

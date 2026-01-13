@@ -57,6 +57,13 @@
         android:text="Limit Operation for User"
         android:layout_marginTop="8dp" />
 
+    <Button
+        android:id="@+id/btn_unblock_requests"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Unblock Requests"
+        android:layout_marginTop="8dp" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

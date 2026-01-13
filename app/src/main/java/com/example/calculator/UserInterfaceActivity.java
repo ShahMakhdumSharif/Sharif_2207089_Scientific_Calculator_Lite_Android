@@ -4,319 +4,272 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Map;
+
 public class UserInterfaceActivity extends AppCompatActivity {
 
-    private String username;
-    private DatabaseReference usersRef;
     private EditText etDisplay;
-    private TextView tvInstruction;
 
-    private String lastResult = ""; // stores last calculation
+    private String lastResult = "0";
+    private String currentOperator = "";
+    private double firstValue = 0;
+
+    private DatabaseReference userRef;
+    private String username;
+    private String userKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_interface);
 
-        usersRef = FirebaseDatabase.getInstance().getReference("users");
-        username = getIntent().getStringExtra("USERNAME");
-        if (username == null) username = "Unknown";
-
         etDisplay = findViewById(R.id.et_display);
-        tvInstruction = findViewById(R.id.tv_instruction);
 
-        loadAssignedOperation();
+    // Get user key and username from login
+    userKey = getIntent().getStringExtra("USER_KEY");
+    username = getIntent().getStringExtra("USERNAME");
+        if (username == null) username = userKey;
 
-        // Buttons
-        Button btnLogout = findViewById(R.id.btn_logout);
-        Button btnHistory = findViewById(R.id.btn_history);
-
-        Button btnAdd = findViewById(R.id.btn_add);
-        Button btnSubtract = findViewById(R.id.btn_subtract);
-        Button btnMultiply = findViewById(R.id.btn_multiply);
-        Button btnDivide = findViewById(R.id.btn_divide);
-        Button btnEqual = findViewById(R.id.btn_equal);
-        Button btnAns = findViewById(R.id.btn_ans);
-
-        Button btnDel = findViewById(R.id.btn_del);
-        Button btnAC = findViewById(R.id.btn_ac);
-
-        Button btn0 = findViewById(R.id.btn_0);
-        Button btn1 = findViewById(R.id.btn_1);
-        Button btn2 = findViewById(R.id.btn_2);
-        Button btn3 = findViewById(R.id.btn_3);
-        Button btn4 = findViewById(R.id.btn_4);
-        Button btn5 = findViewById(R.id.btn_5);
-        Button btn6 = findViewById(R.id.btn_6);
-        Button btn7 = findViewById(R.id.btn_7);
-        Button btn8 = findViewById(R.id.btn_8);
-        Button btn9 = findViewById(R.id.btn_9);
-        Button btnDot = findViewById(R.id.btn_dot);
-
-        Button btnPower = findViewById(R.id.btn_power);
-        Button btnSqrt = findViewById(R.id.btn_sqrt);
-        Button btnMod = findViewById(R.id.btn_mod);
-        Button btnExp = findViewById(R.id.btn_exp);
-
-        Button btnMat = findViewById(R.id.btn_mat);
-        Button btnPoly = findViewById(R.id.btn_poly);
-        Button btnLin = findViewById(R.id.btn_lin);
-
-        // Logout and history
-        btnLogout.setOnClickListener(v -> {
-            startActivity(new Intent(UserInterfaceActivity.this, UserLoginActivity.class));
+        if (userKey == null) {
+            Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
             finish();
-        });
-        btnHistory.setOnClickListener(v -> Toast.makeText(this, "History clicked", Toast.LENGTH_SHORT).show());
+            return;
+        }
 
-        // Number and dot buttons
-        btn0.setOnClickListener(v -> etDisplay.append("0"));
-        btn1.setOnClickListener(v -> etDisplay.append("1"));
-        btn2.setOnClickListener(v -> etDisplay.append("2"));
-        btn3.setOnClickListener(v -> etDisplay.append("3"));
-        btn4.setOnClickListener(v -> etDisplay.append("4"));
-        btn5.setOnClickListener(v -> etDisplay.append("5"));
-        btn6.setOnClickListener(v -> etDisplay.append("6"));
-        btn7.setOnClickListener(v -> etDisplay.append("7"));
-        btn8.setOnClickListener(v -> etDisplay.append("8"));
-        btn9.setOnClickListener(v -> etDisplay.append("9"));
-        btnDot.setOnClickListener(v -> etDisplay.append("."));
+        userRef = FirebaseDatabase.getInstance()
+                .getReference("users")
+                .child(userKey);
 
-        // Operators
-        btnAdd.setOnClickListener(v -> etDisplay.append("+"));
-        btnSubtract.setOnClickListener(v -> etDisplay.append("-"));
-        btnMultiply.setOnClickListener(v -> etDisplay.append("*"));
-        btnDivide.setOnClickListener(v -> etDisplay.append("/"));
-        btnMod.setOnClickListener(v -> etDisplay.append("%"));
-        btnExp.setOnClickListener(v -> etDisplay.append("E")); // ×10^x
-        btnSqrt.setOnClickListener(v -> etDisplay.append("√")); // sqrt
-        btnPower.setOnClickListener(v -> {
-            String text = etDisplay.getText().toString();
-            if (!text.isEmpty() && !text.endsWith("^")) {
-                etDisplay.append("^");
+        initButtons();
+        loadAllowedOperations();
+    }
+
+    /* ---------------- BUTTON INIT ---------------- */
+
+    private void initButtons() {
+
+        // Number buttons
+        int[] numbers = {
+                R.id.btn_0, R.id.btn_1, R.id.btn_2, R.id.btn_3, R.id.btn_4,
+                R.id.btn_5, R.id.btn_6, R.id.btn_7, R.id.btn_8, R.id.btn_9
+        };
+
+        for (int id : numbers) {
+            Button btn = findViewById(id);
+            btn.setOnClickListener(v -> appendNumber(((Button) v).getText().toString()));
+        }
+
+    // Operators (use ids defined in layout: snake_case)
+    findViewById(R.id.btn_add).setOnClickListener(v -> setOperator("+"));
+    findViewById(R.id.btn_subtract).setOnClickListener(v -> setOperator("-"));
+    findViewById(R.id.btn_multiply).setOnClickListener(v -> setOperator("*"));
+    findViewById(R.id.btn_divide).setOnClickListener(v -> setOperator("/"));
+
+    // Equal
+    findViewById(R.id.btn_equal).setOnClickListener(v -> calculate());
+
+        // Clear
+        findViewById(R.id.btn_ac).setOnClickListener(v -> etDisplay.setText(""));
+
+        // Delete last char
+        findViewById(R.id.btn_del).setOnClickListener(v -> {
+            String s = etDisplay.getText().toString();
+            if (!s.isEmpty()) {
+                etDisplay.setText(s.substring(0, s.length() - 1));
             }
         });
 
-        // DEL and AC
-        btnDel.setOnClickListener(v -> {
-            String text = etDisplay.getText().toString();
-            if (!text.isEmpty()) etDisplay.setText(text.substring(0, text.length() - 1));
+    // Ans
+    findViewById(R.id.btn_ans).setOnClickListener(v ->
+        etDisplay.setText(lastResult));
+
+    // Square root
+    findViewById(R.id.btn_sqrt).setOnClickListener(v -> {
+            try {
+                double val = Double.parseDouble(etDisplay.getText().toString());
+                double res = Math.sqrt(val);
+                lastResult = format(res);
+                etDisplay.setText(lastResult);
+            } catch (Exception e) {
+                showError();
+            }
         });
-        btnAC.setOnClickListener(v -> etDisplay.setText(""));
 
-        // Ans
-        btnAns.setOnClickListener(v -> {
-            if (!lastResult.isEmpty()) etDisplay.append(lastResult);
+    // Power x^
+    findViewById(R.id.btn_power).setOnClickListener(v -> setOperator("^"));
+
+        // Logout
+        findViewById(R.id.btn_logout).setOnClickListener(v -> {
+            startActivity(new Intent(this, UserLoginActivity.class));
+            finish();
         });
 
-        // Equal
-        btnEqual.setOnClickListener(v -> calculateResult());
+        // History button - open user's history
+        findViewById(R.id.btn_history).setOnClickListener(v -> {
+            try {
+                Intent i = new Intent(UserInterfaceActivity.this, UserHistoryActivity.class);
+                // pass the username (raw if available) so UserHistoryActivity can display and lookup
+                i.putExtra("username", username != null ? username : userKey);
+                startActivity(i);
+            } catch (Exception e) {
+                Toast.makeText(this, "Unable to open history", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        // Advanced operation dialogs
-        btnMat.setOnClickListener(v -> saveOperation("MATRIX"));
-        btnPoly.setOnClickListener(v -> {
-            // open polynomial dialog and set result into display
-            PolynomialDialog.show(this, result -> {
+        // Advanced operations: Matrix / Polynomial / Linear
+        findViewById(R.id.btn_mat).setOnClickListener(v -> {
+            MatrixDialog.show(this, (expr, result) -> {
                 etDisplay.setText(result);
-                // save history entry for this computed result
                 try {
                     java.util.HashMap<String, Object> h = new java.util.HashMap<>();
-                    h.put("expression", "POLY:" + "coeffs@x");
+                    h.put("expression", expr);
                     h.put("result", result);
                     h.put("ts", System.currentTimeMillis());
-                    if (usersRef != null && username != null) {
-                        usersRef.child(username).child("history").push().setValue(h);
-                    }
+                    if (userRef != null) userRef.child("history").push().setValue(h);
                 } catch (Exception ignored) { }
             });
         });
-        btnLin.setOnClickListener(v -> saveOperation("LINEAR"));
+
+        findViewById(R.id.btn_poly).setOnClickListener(v -> {
+            PolynomialDialog.show(this, (expr, result) -> {
+                etDisplay.setText(result);
+                try {
+                    java.util.HashMap<String, Object> h = new java.util.HashMap<>();
+                    h.put("expression", expr);
+                    h.put("result", result);
+                    h.put("ts", System.currentTimeMillis());
+                    if (userRef != null) userRef.child("history").push().setValue(h);
+                } catch (Exception ignored) { }
+            });
+        });
+
+        findViewById(R.id.btn_lin).setOnClickListener(v -> {
+            LinearDialog.show(this, (expr, result) -> {
+                etDisplay.setText(result);
+                try {
+                    java.util.HashMap<String, Object> h = new java.util.HashMap<>();
+                    h.put("expression", expr);
+                    h.put("result", result);
+                    h.put("ts", System.currentTimeMillis());
+                    if (userRef != null) userRef.child("history").push().setValue(h);
+                } catch (Exception ignored) { }
+            });
+        });
     }
 
-    private void loadAssignedOperation() {
-        usersRef.child(username).child("limited_operation").get()
-                .addOnSuccessListener(snapshot -> {
-                    if (snapshot.exists()) {
-                        String op = snapshot.getValue(String.class);
-                        tvInstruction.setText("You are asked to do the operation: " + (op != null ? op : "None"));
-                    } else {
-                        tvInstruction.setText("You are asked to do the operation: None");
-                    }
-                })
-                .addOnFailureListener(e -> tvInstruction.setText("You are asked to do the operation: None"));
-    }
 
-    private void saveOperation(String operation) {
-        usersRef.child(username).child("limited_operation").setValue(operation)
-                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Operation saved: " + operation, Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to save operation", Toast.LENGTH_SHORT).show());
-    }
-
-    // Calculation logic including sqrt and ^ operator
-    private void calculateResult() {
-        String expr = etDisplay.getText().toString();
-        if (expr.isEmpty()) return;
-        // First try to detect desktop-style operations and use the ported Calculation classes
+    private void setOperator(String op) {
         try {
-            String out = null;
-
-            // MATRIX: contains '|' between two matrices
-            if (expr.contains("|")) {
-                // try sizes 2 and 3 and ops ADD, SUB, MUL until one succeeds
-                String[] ops = new String[]{"ADD", "SUB", "MUL"};
-                for (int size : new int[]{2, 3}) {
-                    for (String op : ops) {
-                        try {
-                            out = com.example.calculator.controller.Calculation.matrix.computeFromString(expr, size, op);
-                            if (out != null) {
-                                // found a match
-                                expr = "MATRIX:" + expr;
-                                break;
-                            }
-                        } catch (Exception ignored) { }
-                    }
-                    if (out != null) break;
-                }
-            }
-
-            // POLYNOMIAL: contains '@' (coeffs@x)
-            if (out == null && expr.contains("@")) {
-                try {
-                    out = com.example.calculator.controller.Calculation.polynomial.computeFromString(expr, 3);
-                    if (out != null) expr = "POLY:" + expr;
-                } catch (Exception ignored) { }
-            }
-
-            // LINEAR: contains ';' and rows of comma-separated numbers
-            if (out == null && expr.contains(";") && expr.contains(",")) {
-                try {
-                    out = com.example.calculator.controller.Calculation.linear.computeFromString(expr);
-                    if (out != null) expr = "LINEAR:" + expr;
-                } catch (Exception ignored) { }
-            }
-
-            // POWER: two numbers separated by comma or space
-            if (out == null && expr.contains(",") && !expr.contains(";") && !expr.contains("@")) {
-                try {
-                    out = com.example.calculator.controller.Calculation.power.computeFromString(expr);
-                    if (out != null) expr = "POWER:" + expr;
-                } catch (Exception ignored) { }
-            }
-
-            // SQRT: if it's a single numeric value (and starts with √ or looks like a number)
-            if (out == null && (expr.startsWith("√") || expr.matches("^[0-9.+\\-]+$"))) {
-                try {
-                    String raw = expr.startsWith("√") ? expr.substring(1) : expr;
-                    out = com.example.calculator.controller.Calculation.squareroot.computeFromString(raw);
-                    if (out != null) expr = "sqrt(" + raw + ")";
-                } catch (Exception ignored) { }
-            }
-
-            if (out == null) {
-                // Fallback to the inline evaluator
-                double result = eval(expr);
-                lastResult = String.valueOf(result);
-                etDisplay.setText(lastResult);
-                out = lastResult;
-            } else {
-                // we have a computed string result from ported classes
-                lastResult = out;
-                etDisplay.setText(out);
-            }
-
-            // Save calculation to Firebase under users/<username>/history
-            try {
-                java.util.HashMap<String, Object> h = new java.util.HashMap<>();
-                h.put("expression", expr);
-                h.put("result", lastResult);
-                h.put("ts", System.currentTimeMillis());
-                if (usersRef != null && username != null) {
-                    usersRef.child(username).child("history").push().setValue(h)
-                            .addOnSuccessListener(aVoid -> {
-                                // saved successfully (no-op)
-                            })
-                            .addOnFailureListener(e -> {
-                                // ignore save failure for now
-                            });
-                }
-            } catch (Exception ignored) { }
-
+            firstValue = Double.parseDouble(etDisplay.getText().toString());
+            currentOperator = op;
+            etDisplay.setText("");
         } catch (Exception e) {
-            Toast.makeText(this, "Invalid expression", Toast.LENGTH_SHORT).show();
+            showError();
         }
     }
 
-    // Expression evaluator supporting + - * / ^ % √
-    private double eval(final String str) {
-        return new Object() {
-            int pos = -1, ch;
+    private void calculate() {
+        try {
+            double secondValue = Double.parseDouble(etDisplay.getText().toString());
+            double result;
 
-            void nextChar() { ch = (++pos < str.length()) ? str.charAt(pos) : -1; }
-
-            boolean eat(int charToEat) {
-                while (ch == ' ') nextChar();
-                if (ch == charToEat) { nextChar(); return true; }
-                return false;
+            switch (currentOperator) {
+                case "+": result = firstValue + secondValue; break;
+                case "-": result = firstValue - secondValue; break;
+                case "*": result = firstValue * secondValue; break;
+                case "/":
+                    if (secondValue == 0) {
+                        showError();
+                        return;
+                    }
+                    result = firstValue / secondValue;
+                    break;
+                case "^":
+                    result = Math.pow(firstValue, secondValue);
+                    break;
+                default:
+                    return;
             }
 
-            double parse() {
-                nextChar();
-                double x = parseExpression();
-                if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
-                return x;
-            }
+            lastResult = format(result);
+            etDisplay.setText(lastResult);
+            // Save exact expression (constructed from entered operands) and result to history
+            try {
+                String exprStr = format(firstValue) + " " + currentOperator + " " + format(secondValue);
+                java.util.HashMap<String, Object> h = new java.util.HashMap<>();
+                h.put("expression", exprStr);
+                h.put("result", lastResult);
+                h.put("ts", System.currentTimeMillis());
+                if (userRef != null) userRef.child("history").push().setValue(h);
+            } catch (Exception ignored) { }
+            currentOperator = "";
 
-            double parseExpression() {
-                double x = parseTerm();
-                for (;;) {
-                    if      (eat('+')) x += parseTerm();
-                    else if (eat('-')) x -= parseTerm();
-                    else return x;
-                }
-            }
+        } catch (Exception e) {
+            showError();
+        }
+    }
 
-            double parseTerm() {
-                double x = parseFactor();
-                for (;;) {
-                    if      (eat('*')) x *= parseFactor();
-                    else if (eat('/')) x /= parseFactor();
-                    else if (eat('%')) x %= parseFactor();
-                    else return x;
-                }
-            }
+    /* ---------------- FIREBASE OPERATION LIMIT ---------------- */
 
-            double parseFactor() {
-                if (eat('+')) return parseFactor();
-                if (eat('-')) return -parseFactor();
+    private void loadAllowedOperations() {
 
-                double x;
-                int startPos = this.pos;
+        userRef.child("allowed_operations")
+                .get()
+                .addOnSuccessListener(snapshot -> {
 
-                if (eat('(')) {
-                    x = parseExpression();
-                    eat(')');
-                } else if (ch == '√') {
-                    nextChar();
-                    x = Math.sqrt(parseFactor());
-                } else if (Character.isDigit(ch) || ch == '.') {
-                    while (Character.isDigit(ch) || ch == '.') nextChar();
-                    x = Double.parseDouble(str.substring(startPos, this.pos));
-                } else {
-                    throw new RuntimeException("Unexpected: " + (char)ch);
-                }
+                    if (!snapshot.exists()) return;
 
-                if (eat('^')) x = Math.pow(x, parseFactor());
+                    Map<String, Boolean> ops =
+                            (Map<String, Boolean>) snapshot.getValue();
 
-                return x;
-            }
-        }.parse();
+                    if (ops == null) return;
+
+                    setEnabled(R.id.btn_add, ops.containsKey("+"));
+                    setEnabled(R.id.btn_subtract, ops.containsKey("-"));
+                    setEnabled(R.id.btn_multiply, ops.containsKey("*"));
+                    setEnabled(R.id.btn_divide, ops.containsKey("/"));
+                    setEnabled(R.id.btn_sqrt, ops.containsKey("sqrt"));
+                    setEnabled(R.id.btn_power, ops.containsKey("^"));
+
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed to load permissions", Toast.LENGTH_SHORT).show());
+    }
+
+    private void setEnabled(int id, boolean enabled) {
+        Button b = findViewById(id);
+        if (b != null) b.setEnabled(enabled);
+    }
+
+    /* ---------------- HELPERS ---------------- */
+
+    private void showError() {
+        Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show();
+        etDisplay.setText("");
+    }
+
+    private String format(double d) {
+        if (d == (long) d)
+            return String.valueOf((long) d);
+        return String.valueOf(d);
+    }
+
+    // Append a digit or dot to the display with simple validation (prevents multiple dots)
+    private void appendNumber(String s) {
+        if (etDisplay == null || s == null) return;
+        String cur = etDisplay.getText().toString();
+        if (".".equals(s)) {
+            if (cur.contains(".")) return; // avoid multiple decimal points
+            if (cur.isEmpty()) etDisplay.setText("0"); // leading dot -> 0.
+        }
+        etDisplay.append(s);
     }
 }

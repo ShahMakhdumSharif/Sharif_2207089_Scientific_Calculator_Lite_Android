@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/surface">
 
     <!-- Header: User history title -->
     <TextView
@@ -12,10 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="History for: username"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:paddingBottom="12dp"
-        android:gravity="center_horizontal"/>
+        android:gravity="center_horizontal"
+        android:textColor="@color/onSurface"/>
 
     <!-- Scrollable TableLayout for calculation history -->
     <ScrollView
@@ -38,6 +40,7 @@
         android:paddingTop="12dp">
 
         <Button
+            style="@style/CalcButtonSecondary"
             android:id="@+id/btn_back"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -49,6 +52,7 @@
             android:layout_height="wrap_content"/>
 
         <Button
+            style="@style/CalcButtonSecondary"
             android:id="@+id/btn_logout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

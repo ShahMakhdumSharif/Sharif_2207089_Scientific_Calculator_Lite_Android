@@ -66,7 +66,21 @@ public class UserLoginActivity extends AppCompatActivity {
                 Boolean blocked = snapshot.child("blocked").getValue(Boolean.class);
                 if (blocked != null && blocked) {
                     etUsername.setError("User blocked");
-                    Toast.makeText(this, "This account is blocked", Toast.LENGTH_SHORT).show();
+                    // Offer unblock request
+                    new androidx.appcompat.app.AlertDialog.Builder(UserLoginActivity.this)
+                            .setTitle("Account blocked")
+                            .setMessage("This account is blocked. Would you like to request an unblock?")
+                            .setPositiveButton("Request Unblock", (dialog, which) -> {
+                                try {
+                                    usersRef.child(key).child("unblock_request").setValue(true)
+                                            .addOnSuccessListener(aVoid -> Toast.makeText(UserLoginActivity.this, "Unblock request submitted", Toast.LENGTH_SHORT).show())
+                                            .addOnFailureListener(e -> Toast.makeText(UserLoginActivity.this, "Failed to submit request", Toast.LENGTH_SHORT).show());
+                                } catch (Exception ex) {
+                                    Toast.makeText(UserLoginActivity.this, "Failed to submit request", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton("Close", (dialog, which) -> dialog.dismiss())
+                            .show();
                     return;
                 }
 
@@ -83,6 +97,7 @@ public class UserLoginActivity extends AppCompatActivity {
                     // Start UserInterfaceActivity
                     Intent intent = new Intent(UserLoginActivity.this, UserInterfaceActivity.class);
                     intent.putExtra("USERNAME", userInput); // pass username
+                    intent.putExtra("USER_KEY", key); // pass sanitized user key
                     startActivity(intent);
                     finish(); // optional
                 } else {

@@ -3,36 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <TextView
+        android:id="@+id/tv_username_unblock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select degree and enter coefficients (a0 + a1 x + a2 x^2 ...). Coefficients count = degree + 1"
-        android:paddingBottom="8dp" />
+        android:textStyle="bold"
+        android:text="username"/>
+
+    <TextView
+        android:id="@+id/tv_name_unblock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Full name"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="end">
 
-        <TextView
+        <Button
+            android:id="@+id/btn_reject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Degree:" />
+            android:text="Reject"/>
 
-        <Spinner
-            android:id="@+id/sp_degree"
+        <Button
+            android:id="@+id/btn_approve"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp" />
+            android:text="Approve"
+            android:layout_marginStart="8dp"/>
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/container_coeffs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp" />
 
 </LinearLayout>
