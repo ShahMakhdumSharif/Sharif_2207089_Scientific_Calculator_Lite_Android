@@ -1,5 +1,5 @@
 package com.example.calculator;
-
+import android.util.Log;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

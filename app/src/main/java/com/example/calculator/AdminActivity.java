@@ -1,9 +1,8 @@
 package com.example.calculator;
-
+import android.util.Log;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AdminActivity extends AppCompatActivity {
+
     private static final String TAG = "AdminActivity";
 
     @Override
@@ -18,6 +18,7 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
+        // Find views
         TextView tvWelcome = findViewById(R.id.tv_welcome);
         Button btnAllUsers = findViewById(R.id.btn_all_users);
         Button btnHistory = findViewById(R.id.btn_history);
@@ -28,21 +29,40 @@ public class AdminActivity extends AppCompatActivity {
 
         if (tvWelcome == null || btnAllUsers == null || btnHistory == null ||
                 btnBlockList == null || btnBlockUser == null || btnLimitOp == null || btnBack == null) {
-            Log.e(TAG, "One or more views not found. Check activity_admin layout and setContentView.");
+            Log.e(TAG, "One or more views not found! Check activity_admin layout IDs.");
+            Toast.makeText(this, "UI error, check logcat.", Toast.LENGTH_LONG).show();
             return;
         }
+
         tvWelcome.setText("Welcome Shah Makhdum Sharif");
 
-        btnAllUsers.setOnClickListener(v -> startActivity(new Intent(AdminActivity.this, AllUsersActivity.class)));
-        btnHistory.setOnClickListener(v -> startActivity(new Intent(AdminActivity.this, HistoryActivity.class)));
-        btnBlockList.setOnClickListener(v -> showPlaceholder("Block List"));
-        btnBlockUser.setOnClickListener(v -> showPlaceholder("Block User"));
-        btnLimitOp.setOnClickListener(v -> showPlaceholder("Limit Operation for User"));
 
+        // All Users
+        btnAllUsers.setOnClickListener(v ->
+                startActivity(new Intent(AdminActivity.this, AllUsersActivity.class))
+        );
+
+        // History
+        btnHistory.setOnClickListener(v ->
+                startActivity(new Intent(AdminActivity.this, HistoryActivity.class))
+        );
+
+        // Block List (blocked users)
+        btnBlockList.setOnClickListener(v ->
+                startActivity(new Intent(AdminActivity.this, BlockListActivity.class))
+        );
+
+        // Block User (unblocked users)
+        btnBlockUser.setOnClickListener(v ->
+                startActivity(new Intent(AdminActivity.this, BlockUserActivity.class))
+        );
+
+        // Limit Operation (placeholder for now)
+        btnLimitOp.setOnClickListener(v ->
+                Toast.makeText(this, "Limit Operation clicked (not implemented yet)", Toast.LENGTH_SHORT).show()
+        );
+
+        // Back button
         btnBack.setOnClickListener(v -> finish());
-    }
-
-    private void showPlaceholder(String name) {
-        Toast.makeText(this, name + " clicked (implement action)", Toast.LENGTH_SHORT).show();
     }
 }

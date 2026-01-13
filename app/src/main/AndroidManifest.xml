@@ -23,6 +23,12 @@
         <activity
             android:name=".UserHistoryActivity"
             android:exported="false" />
+        <activity
+            android:name=".BlockListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BlockUserActivity"
+            android:exported="false" />
 
         <activity
             android:name=".RegisterActivity"
