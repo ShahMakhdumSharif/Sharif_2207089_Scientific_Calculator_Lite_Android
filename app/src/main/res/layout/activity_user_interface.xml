@@ -5,35 +5,41 @@
     android:padding="12dp"
     android:background="@color/surface">
 
-    <!-- Welcome Label -->
-    <TextView
-        android:id="@+id/tv_welcome"
+    <!-- Header card: welcome + instruction -->
+    <LinearLayout
+        android:id="@+id/header_card"
+        style="@style/HeaderCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Welcome"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="@color/onSurface" />
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
 
-    <!-- Instruction Label -->
-    <TextView
-        android:id="@+id/tv_instruction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_welcome"
-        android:layout_marginTop="6dp"
-        android:gravity="center"
-        android:text="You are asked to do the operation:"
-        android:textSize="16sp"
-        android:textColor="@color/onSurface" />
+        <TextView
+            android:id="@+id/tv_welcome"
+            style="@style/HeaderText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Welcome"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_instruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="You are asked to do the operation:"
+            android:textSize="16sp"
+            android:textColor="@color/onSurface" />
+
+    </LinearLayout>
 
     <!-- Display -->
     <EditText
         android:id="@+id/et_display"
         android:layout_width="match_parent"
         android:layout_height="140dp"
-        android:layout_below="@id/tv_instruction"
+        android:layout_below="@id/header_card"
         android:layout_marginTop="12dp"
         android:backgroundTint="@color/neutral_light"
         android:focusable="false"

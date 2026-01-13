@@ -8,16 +8,21 @@
     android:background="@color/surface">
 
     <!-- Header: User history title -->
-    <TextView
-        android:id="@+id/tv_user_name_header"
+    <LinearLayout
+        style="@style/HeaderCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="History for: username"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:paddingBottom="12dp"
-        android:gravity="center_horizontal"
-        android:textColor="@color/onSurface"/>
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_user_name_header"
+            style="@style/HeaderText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="History for: username"
+            android:gravity="center_horizontal"/>
+
+    </LinearLayout>
 
     <!-- Scrollable TableLayout for calculation history -->
     <ScrollView
