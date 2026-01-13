@@ -62,6 +62,14 @@ public class UserLoginActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Check if user is blocked
+                Boolean blocked = snapshot.child("blocked").getValue(Boolean.class);
+                if (blocked != null && blocked) {
+                    etUsername.setError("User blocked");
+                    Toast.makeText(this, "This account is blocked", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 String stored = snapshot.child("password").getValue(String.class);
                 if (stored == null) {
                     etPassword.setError("Incorrect");

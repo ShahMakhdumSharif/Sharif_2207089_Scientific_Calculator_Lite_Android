@@ -154,6 +154,23 @@ public class UserInterfaceActivity extends AppCompatActivity {
             double result = eval(expr);
             lastResult = String.valueOf(result);
             etDisplay.setText(lastResult);
+
+            // Save calculation to Firebase under users/<username>/history
+            try {
+                java.util.HashMap<String, Object> h = new java.util.HashMap<>();
+                h.put("expression", expr);
+                h.put("result", lastResult);
+                h.put("ts", System.currentTimeMillis());
+                if (usersRef != null && username != null) {
+                    usersRef.child(username).child("history").push().setValue(h)
+                            .addOnSuccessListener(aVoid -> {
+                                // saved successfully (no-op)
+                            })
+                            .addOnFailureListener(e -> {
+                                // ignore save failure for now
+                            });
+                }
+            } catch (Exception ignored) { }
         } catch (Exception e) {
             Toast.makeText(this, "Invalid expression", Toast.LENGTH_SHORT).show();
         }

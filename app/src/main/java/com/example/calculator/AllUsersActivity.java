@@ -62,7 +62,8 @@ public class AllUsersActivity extends AppCompatActivity {
             int count = 0;
             for (DataSnapshot child : snapshot.getChildren()) {
                 String username = String.valueOf(child.child("username").getValue());
-                String password = String.valueOf(child.child("password").getValue());
+                // Do not expose plaintext passwords in the admin UI
+                String password = "******";
 
                 TableRow row = new TableRow(this);
                 row.addView(makeCell(username, false));
