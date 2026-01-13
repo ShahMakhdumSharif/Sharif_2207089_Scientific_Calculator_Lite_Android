@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp">
+
+    <!-- Welcome Label -->
+    <TextView
+        android:id="@+id/tv_welcome"
+        android:layout_width="427dp"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:text="Welcome"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <!-- Instruction Label -->
+    <TextView
+        android:id="@+id/tv_instruction"
+        android:layout_width="423dp"
+        android:layout_height="61dp"
+        android:layout_below="@id/tv_welcome"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:text="You are asked to do the operation:"
+        android:textSize="16sp" />
+
+    <!-- Display -->
+    <EditText
+        android:id="@+id/et_display"
+        android:layout_width="427dp"
+        android:layout_height="151dp"
+        android:layout_below="@id/tv_instruction"
+        android:layout_marginTop="10dp"
+        android:background="#DDDDDD"
+        android:focusable="false"
+        android:gravity="end|center_vertical"
+        android:inputType="none"
+        android:padding="10dp"
+        android:textSize="24sp" />
+
+    <!-- Calculator Grid -->
+    <GridLayout
+        android:id="@+id/grid_calculator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_display"
+        android:layout_above="@id/btn_history"
+        android:layout_marginTop="12dp"
+        android:columnCount="4">
+
+        <!-- Row 1 -->
+        <Button android:text="<"/>
+        <Button android:text=">"/>
+        <Button android:text="^"/>
+        <Button android:text="MOD"/>
+
+        <!-- Row 2 -->
+        <Button android:text="v"/>
+        <Button android:text="x^"/>
+        <Button android:text="Mat"/>
+        <Button android:text="Poly"/>
+
+        <!-- Row 3 -->
+        <Button android:text="Lin"/>
+        <Button android:text="√"/>
+        <Button android:text="DEL" android:textColor="#e10e0e"/>
+        <Button android:text="AC" android:textColor="#e10e0e"/>
+
+        <!-- Row 4 -->
+        <Button android:text="7"/>
+        <Button android:text="8"/>
+        <Button android:text="9"/>
+        <Button android:text="/"/>
+
+        <!-- Row 5 -->
+        <Button android:text="4"/>
+        <Button android:text="5"/>
+        <Button android:text="6"/>
+        <Button android:text="*"/>
+
+        <!-- Row 6 -->
+        <Button android:text="1"/>
+        <Button android:text="2"/>
+        <Button android:text="3"/>
+        <Button android:text="-"/>
+
+        <!-- Row 7 -->
+        <Button android:text="0"/>
+        <Button android:text="."/>
+        <Button android:text="×10^x"/>
+        <Button android:text="+"/>
+
+        <!-- Row 8 -->
+        <Button android:text="Ans"/>
+        <View android:layout_width="0dp" android:layout_height="0dp"/>
+        <View android:layout_width="0dp" android:layout_height="0dp"/>
+        <Button android:text="="/>
+
+    </GridLayout>
+
+    <!-- History Button (Bottom Left) -->
+    <Button
+        android:id="@+id/btn_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="History"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"/>
+
+    <!-- Logout Button (Bottom Right) -->
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"/>
+
+</RelativeLayout>
